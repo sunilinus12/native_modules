@@ -1,23 +1,29 @@
-import {
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
-import { NativeModules } from 'react-native';
-
-const { CalenderModule } = NativeModules; // Ensure the name matches `getName()` in Java
+import {CalenderModule} from './src/NativeModules';
 
 export default function App() {
-  const onPress = () => {
+  const onPress = async () => {
     try {
-      CalenderModule.createCalendarEvent('testName', 'testLocation');
-    } catch (error) {
-      console.log("Error",error);
+      // CalenderModule.createCalendarEvent(
+      //   'testName',
+      //   'testLocation',
+      //   (error) => {
+      //     console.log("Error",error)
+      //   },
+      //   (success) => {
+      //     console.log("success",success);
+
+      //   }
+      // );
+      let resp = await CalenderModule.createCalendarEventWithPromise(
+        'testName',
+        'testLocation',
+      );
+      console.log("resp",resp);
       
+    } catch (error) {
+      console.log('Error', error);
     }
   };
   return (

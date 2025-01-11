@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "apk": "cd android && ./gradlew clean assembleRelease && cd .."
+    "apk": "cd android && ./gradlew clean assembleRelease && cd ..",
+    "clean:android": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "react": "18.2.0",
