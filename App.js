@@ -1,27 +1,43 @@
-import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {CalenderModule} from './src/NativeModules';
+import {
+  Button,
+  EventEmitter,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  NativeModules,
+  NativeEventEmitter,
+} from 'react-native';
+import React, {useEffect} from 'react';
+const {CustomTimeStamp} = NativeModules;
 
+const timeStampEmitter = new NativeEventEmitter(CustomTimeStamp);
 export default function App() {
+  const handleGetEventData = eventData => {
+    console.log('eventDataeventDataeventData', eventData);
+  };
+
+  useEffect(() => {
+    const subscribe = timeStampEmitter.addListener(
+      'TimestampEvent',
+      handleGetEventData,
+    );
+
+    return () => {
+      subscribe.remove();
+    };
+  }, []);
+
   const onPress = async () => {
     try {
-      // CalenderModule.createCalendarEvent(
-      //   'testName',
-      //   'testLocation',
-      //   (error) => {
-      //     console.log("Error",error)
-      //   },
-      //   (success) => {
-      //     console.log("success",success);
-
-      //   }
-      // );
-      let resp = await CalenderModule.createCalendarEventWithPromise(
-        'testName',
-        'testLocation',
-      );
-      console.log("resp",resp);
-      
+      CustomTimeStamp.isWorking('linus', (error, success) => {
+        if (!error) {
+          console.log('sucess', success);
+        } else {
+          console.log('error', error);
+        }
+      });
+      CustomTimeStamp.EmitTimeStamp();
     } catch (error) {
       console.log('Error', error);
     }

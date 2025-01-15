@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "apk": "cd android && ./gradlew clean assembleRelease && cd ..",
-    "clean:android": "cd android && ./gradlew clean && cd .."
+    "clean:android": "cd android && ./gradlew clean && cd ..",
+    "proxy": "https://natureland.hipster-dev.com:8081"
   },
   "dependencies": {
     "react": "18.2.0",
