@@ -1,3 +1,3 @@
 import {NativeModules} from 'react-native';
-const {CalenderModule,ImagePicker,CustomTimeStamp} = NativeModules;
-export {CalenderModule,ImagePicker,CustomTimeStamp};
+const {CalenderModule,CustomTimeStamp} = NativeModules;
+export {CalenderModule,CustomTimeStamp,CustomImagePicker};

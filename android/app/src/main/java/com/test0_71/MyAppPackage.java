@@ -22,6 +22,8 @@ public class MyAppPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new CalenderModule(reactContext));
+        modules.add(new CustomTimeStamp(reactContext));
+        modules.add(new CustomImagePicker(reactContext));
 
         return modules;
     }
