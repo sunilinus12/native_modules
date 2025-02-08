@@ -22,7 +22,7 @@ public class MyAppPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new CalenderModule(reactContext));
-
+        modules.add(new PipModule(reactContext));
         return modules;
     }
 }

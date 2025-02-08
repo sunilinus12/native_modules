@@ -9,7 +9,7 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 import React, {useEffect} from 'react';
-const {CustomTimeStamp} = NativeModules;
+const {CustomTimeStamp, PipModule} = NativeModules;
 
 const timeStampEmitter = new NativeEventEmitter(CustomTimeStamp);
 export default function App() {
@@ -30,14 +30,8 @@ export default function App() {
 
   const onPress = async () => {
     try {
-      CustomTimeStamp.isWorking('linus', (error, success) => {
-        if (!error) {
-          console.log('sucess', success);
-        } else {
-          console.log('error', error);
-        }
-      });
-      CustomTimeStamp.EmitTimeStamp();
+      let resp = await PipModule.StartPipMode();
+      console.log('resrsep', resp);
     } catch (error) {
       console.log('Error', error);
     }
