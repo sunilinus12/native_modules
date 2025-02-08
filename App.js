@@ -9,11 +9,14 @@ import {
   NativeEventEmitter,
   PermissionsAndroid,
   Image,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-const {CustomTimeStamp, CustomImagePicker} = NativeModules;
+import {CustomTimeStamp, CalenderModule} from './src/NativeModules';
 
-const timeStampEmitter = new NativeEventEmitter(CustomTimeStamp);
+const timeStampEmitter =
+  Platform.OS == 'android' ? new NativeEventEmitter(CustomTimeStamp) : null;
+
 export default function App() {
   const [image, setImage] = useState(null);
   const handleGetEventData = eventData => {
@@ -21,13 +24,17 @@ export default function App() {
   };
 
   useEffect(() => {
-    const subscribe = timeStampEmitter.addListener(
-      'TimestampEvent',
-      handleGetEventData,
-    );
-
+    let subscribe;
+    if (Platform.OS == 'android') {
+      subscribe = timeStampEmitter.addListener(
+        'TimestampEvent',
+        handleGetEventData,
+      );
+    }
     return () => {
-      subscribe.remove();
+      if (subscribe) {
+        subscribe.remove();
+      }
     };
   }, []);
 
@@ -43,29 +50,41 @@ export default function App() {
   };
   const onPress = async () => {
     try {
-      // handleCustomTimeStamp();
-      let askPermission = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
+      CalenderModule.createCalendarEvent(
+        ' office',
+        ' on tuestday ',
+        (error,eventData) => {
+          if(eventData){
+            console.log('eventDataeventData', eventData);
+          }else{
+            console.log('error in evenData', error);
+          }
+        },
       );
-      if (askPermission == PermissionsAndroid.RESULTS.GRANTED) {
-        let resp = await CustomImagePicker.openCamera();
-        console.log('resprespresprespresp', resp);
-        setImage(resp);
-      } else {
-        console.log('Camera permission denied');
-      }
     } catch (error) {
       console.log('onPress: Error', error);
     }
   };
+  const handleCaptureImage = async () => {
+    function getFileNameFromUri(uri) {
+      // Split the URI by '/' and get the last part (the file name)
+      const segments = uri.split('/');
+      return segments[segments.length - 1];
+    }
+    // handleCustomTimeStamp();
+    let askPermission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    if (askPermission == PermissionsAndroid.RESULTS.GRANTED) {
+      let resp = await CustomImagePicker.openCamera();
+      console.log('resprespresprespresp', resp);
+      setImage(resp);
+    } else {
+      console.log('Camera permission denied');
+    }
+  };
   const handleDelete = async () => {
     try {
-      function getFileNameFromUri(uri) {
-        // Split the URI by '/' and get the last part (the file name)
-        const segments = uri.split('/');
-        return segments[segments.length - 1];
-      }
-
       let resp = await CustomImagePicker.deleteImage(getFileNameFromUri(image));
       console.log('respresprespresprespresp', resp);
     } catch (error) {
