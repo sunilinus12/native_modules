@@ -7,6 +7,7 @@ import {
   View,
   NativeModules,
   NativeEventEmitter,
+  AppState,
 } from 'react-native';
 import React, {useEffect} from 'react';
 const {CustomTimeStamp, PipModule} = NativeModules;
@@ -18,15 +19,18 @@ export default function App() {
   };
 
   useEffect(() => {
-    const subscribe = timeStampEmitter.addListener(
-      'TimestampEvent',
-      handleGetEventData,
-    );
+    const appStateSubs = AppState.addEventListener('change', nextAppState => {
+      console.log('AppState changed to:', nextAppState);
+      if (nextAppState == 'background') {
+        onPress();
+      }
+    });
 
+    // Cleanup the listener when component unmounts
     return () => {
-      subscribe.remove();
+      appStateSubs.remove();
     };
-  }, []);
+  }, []); // Em
 
   const onPress = async () => {
     try {
